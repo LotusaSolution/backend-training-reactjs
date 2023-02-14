@@ -1,6 +1,9 @@
 const db = require("../models");
 const Symbol = db.symbol;
 
+let clients = [];
+let dataRealtime = [];
+
 // Create and Save a new Symbol
 exports.create = (req, res) => {
   // Validate request
@@ -19,6 +22,12 @@ exports.create = (req, res) => {
     .save(symbol)
     .then(data => {
       res.send(data);
+      async function addFact(req, res, next) {
+        const newFact = req.body;
+        facts.push(newFact);
+        res.json(newFact)
+        return sendEventsToAll(newFact);
+      }
     })
     .catch(err => {
       res.status(500).send({
@@ -71,7 +80,6 @@ exports.creates = async (req, res) => {
 
 // Retrieve all Symbols from the database.
 exports.findAll = (req, res) => {
-  const query = req.query;
   var condition = {};
   Object.keys(query).forEach(param => {
     condition[param] = { $regex: new RegExp(query[param]), $options: "i" }
@@ -79,7 +87,7 @@ exports.findAll = (req, res) => {
 
   Symbol.find(condition)
     .then(data => {
-      if(data.length > 50) data.length = 50
+      if (data.length > 50) data.length = 50
       res.send(data);
     })
     .catch(err => {
@@ -183,4 +191,34 @@ exports.findAllPublished = (req, res) => {
           err.message || "Some error occurred while retrieving symbols."
       });
     });
+};
+
+//Streaming data
+exports.streamingData = (req, res) => {
+  const symbols = req.param.symbols;
+  if (!symbols) return;
+
+  const headers = {
+    'Content-Type': 'text/event-stream',
+    'Connection': 'keep-alive',
+    'Cache-Control': 'no-cache'
+  };
+  res.writeHead(200, headers);
+  const data = `data: ${JSON.stringify(facts)}\n\n`;
+  res.write(data);
+  const clientId = Date.now();
+  const newClient = {
+    id: clientId,
+    response
+  };
+  clients.push(newClient);
+  req.on('close', () => {
+    console.log(`${clientId} Connection closed`);
+    clients = clients.filter(client => client.id !== clientId);
+  });
+
+  function sendEventsToAll(newFact) {
+    clients.forEach(client => client.response.write(`data: ${JSON.stringify(newFact)}\n\n`))
+  }
+
 };

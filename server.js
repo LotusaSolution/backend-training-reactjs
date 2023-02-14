@@ -3,6 +3,7 @@ const cors = require("cors");
 const productRoute = require("./app/routes/products");
 const portfolioRoute = require("./app/routes/portfolio");
 const symbolRoute = require("./app/routes/symbol");
+const orderRoute = require("./app/routes/order");
 
 const app = express();
 
@@ -31,6 +32,7 @@ db.mongoose
 productRoute(app);
 portfolioRoute(app)
 symbolRoute(app)
+orderRoute(app)
 // simple route
 app.use("/", (req, res) => {
   let mes = `

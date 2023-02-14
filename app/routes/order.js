@@ -1,5 +1,5 @@
 module.exports = app => {
-  const symbol = require("../controllers/symbol.js");
+  const symbol = require("../controllers/order.js");
 
   var router = require("express").Router();
 
@@ -7,11 +7,11 @@ module.exports = app => {
   router.post("/all", symbol.creates);
   router.post("/", symbol.create);
 
-  //Realtime Order
-  router.get("/streaming-data/:symbols", symbol.streamingData);
-
   // Retrieve all symbol
   router.get("/", symbol.findAll);
+
+  // Retrieve all published symbol
+  router.get("/published", symbol.findAllPublished);
 
   // Retrieve a single Tutorial with id
   router.get("/:id", symbol.findOne);
@@ -25,5 +25,5 @@ module.exports = app => {
   // Create a new Tutorial
   router.delete("/", symbol.deleteAll);
 
-  app.use("/api/symbol", router);
+  app.use("/api/order", router);
 };
