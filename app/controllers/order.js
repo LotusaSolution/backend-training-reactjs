@@ -4,22 +4,29 @@ const Order = db.order;
 // Create and Save a new Order
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.title) {
-    res.status(400).send({ message: "Content can not be empty!" });
+  let { account_id, limit_price, order_type, quantity, session_id, side, symbol, time_in_force } = req.body
+  if (!(account_id || limit_price || order_type || quantity || session_id || side || symbol || time_in_force)) {
+    res.status(400).send({ message: "Order invalid!" });
     return;
   }
 
   // Create a Order
   const order = new Order({
-    title: req.body.title,
-    description: req.body.description,
-    published: req.body.published ? req.body.published : false
+    account_id, limit_price, order_type, quantity, session_id, side, symbol, time_in_force,
+    leave_quantity: quantity,
+    order_status: 'WAITING'
   });
 
   // Save Order in the database
   order
     .save(order)
     .then(data => {
+      Order.findByIdAndUpdate(data.id, {
+        ...data,
+        broker_order_id: data.id,
+        client_order_id: data.id,
+
+      }, { useFindAndModify: false })
       res.send(data);
     })
     .catch(err => {
