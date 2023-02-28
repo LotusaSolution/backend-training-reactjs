@@ -9,5 +9,6 @@ db.url = dbConfig.url;
 db.products = require("./products.js")(mongoose);
 db.portfolio = require("./portfolio.js")(mongoose);
 db.symbol = require("./symbol.js")(mongoose);
+db.alert = require("./alert.js")(mongoose);
 
 module.exports = db;

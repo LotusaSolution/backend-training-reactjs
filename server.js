@@ -4,6 +4,7 @@ const productRoute = require("./app/routes/products");
 const portfolioRoute = require("./app/routes/portfolio");
 const symbolRoute = require("./app/routes/symbol");
 const orderRoute = require("./app/routes/order");
+const alertRoute = require("./app/routes/alert");
 
 const app = express();
 
@@ -32,31 +33,12 @@ db.mongoose
 productRoute(app);
 portfolioRoute(app)
 symbolRoute(app)
-orderRoute(app)
+// orderRoute(app)
+alertRoute(app)
 // simple route
 app.use("/", (req, res) => {
   let mes = `
-  <p>// Create a new Product</p>
-  <code>router.post('/', products.create);</code>
-
-  <p>// Retrieve all products</p>
-  <code>router.get('/', products.findAll);</code>
-
-  <p>// Retrieve all published products</p>
-  <code>router.get('/published', products.findAllPublished);</code>
-
-  <p>// Retrieve a single Product with id</p>
-  <code>router.get('/:id', products.findOne);</code>
-
-  <p>// Update a Product with id</p>
-  <code>router.put('/:id', products.update);</code>
-
-  <p>// Delete a Product with id</p>
-  <code>router.delete('/:id', products.delete);</code>
-
-  <p>// Delete all Product</p>
-  <code>router.delete('/', products.deleteAll);</code> 
-  `
+  <p>Lotusa React training backend</p>`
   res.send(`<div>${mes}</div>`)
 });
 
