@@ -4,16 +4,14 @@ const Alert = db.alert;
 // Create and Save a new Alert
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.title) {
+  if (!req.body.symbol) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
 
   // Create a Alert
   const alert = new Alert({
-    title: req.body.title,
-    description: req.body.description,
-    published: req.body.published ? req.body.published : false
+   ...req.body
   });
 
   // Save Alert in the database
