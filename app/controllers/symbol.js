@@ -80,6 +80,7 @@ exports.creates = async (req, res) => {
 
 // Retrieve all Symbols from the database.
 exports.findAll = (req, res) => {
+  const query = req.query;
   var condition = {};
   Object.keys(query).forEach(param => {
     condition[param] = { $regex: new RegExp(query[param]), $options: "i" }
